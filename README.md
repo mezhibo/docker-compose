@@ -361,3 +361,6 @@ services:
 ![alt text](https://github.com/mezhibo/docker-compose/blob/8109ef210570ab9e86d23feb637b33bf8da4b32d/IMG/32.jpg)
 
 
+И удостоверимся, что все контейнеры выключены 
+
+![alt text](https://github.com/mezhibo/docker-compose/blob/0ac14347476dec47175b4e68274ec204c38cdb29/IMG/33.jpg)
