@@ -231,6 +231,133 @@ Hey, Netology
 
 
 
+**Задача 5**
 
+1) Создайте отдельную директорию(например /tmp/netology/docker/task5) и 2 файла внутри него. "compose.yaml" с содержимым:
+
+'''
+version: "3"
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    network_mode: host
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      '''
+"docker-compose.yaml" с содержимым:
+
+'''
+version: "3"
+services:
+  registry:
+    image: registry:2
+    network_mode: host
+    ports:
+    - "5000:5000"
+
+  '''
+
+И выполните команду "docker compose up -d". Какой из файлов был запущен и почему? (подсказка: https://docs.docker.com/compose/compose-application-model/#the-compose-file )
+
+2) Отредактируйте файл compose.yaml так, чтобы были запущенны оба файла. (подсказка: https://docs.docker.com/compose/compose-file/14-include/)
+
+3) Выполните в консоли вашей хостовой ОС необходимые команды чтобы залить образ custom-nginx как custom-nginx:latest в запущенное вами, локальное registry. Дополнительная документация: https://distribution.github.io/distribution/about/deploying/
+
+4) Откройте страницу "https://127.0.0.1:9000" и произведите начальную настройку portainer.(логин и пароль адмнистратора)
+
+5) Откройте страницу "http://127.0.0.1:9000/#!/home", выберите ваше local окружение. Перейдите на вкладку "stacks" и в "web editor" задеплойте следующий компоуз:
+
+'''
+
+version: '3'
+
+services:
+  nginx:
+    image: 127.0.0.1:5000/custom-nginx
+    ports:
+      - "9090:80"
+      '''
+      
+6) Перейдите на страницу "http://127.0.0.1:9000/#!/2/docker/containers", выберите контейнер с nginx и нажмите на кнопку "inspect". В представлении <> Tree разверните поле "Config" и сделайте скриншот от поля "AppArmorProfile" до "Driver".
+
+7) Удалите любой из манифестов компоуза(например compose.yaml). Выполните команду "docker compose up -d". Прочитайте warning, объясните суть предупреждения и выполните предложенное действие. Погасите compose-проект ОДНОЙ(обязательно!!) командой.
+
+В качестве ответа приложите скриншоты консоли, где видно все введенные команды и их вывод, файл compose.yaml , скриншот portainer c задеплоенным компоузом.
+
+
+
+
+**Решение 5**
+
+
+Если запущен контейнер portainer, это означает, что был использован файл compose.yaml. Если запущен контейнер registry, это означает, что был использован файл docker-compose.yaml.
+
+На практике, поведение Docker Compose может зависеть от версии и конфигурации.
+
+
+![alt text](https://github.com/mezhibo/docker-compose/blob/129c6dd5e02cdcec1ada44340d0cac3b8dbc3e5e/IMG/22.jpg)
+
+
+Теперь отредактирую файлик compose.yaml
+
+![alt text](https://github.com/mezhibo/docker-compose/blob/8e601deb1d5947a53fbc624eea082ebfe9c12274/IMG/23.jpg)
+
+
+И проверим что завелись оба контейнера 
+
+![alt text](https://github.com/mezhibo/docker-compose/blob/8e601deb1d5947a53fbc624eea082ebfe9c12274/IMG/24.jpg)
+
+
+Плмечаем на ранее созданный кастамный образ и пушим его 
+
+![alt text](https://github.com/mezhibo/docker-compose/blob/facebded0b02effc6e4b99a74beef216f013508c/IMG/25.jpg)
+
+
+сейчас проверим что у на сработает локальный репозиторий
+
+Дропнем localhost:5000/custom-nginx
+
+Подтянем его с локлаьной репы
+
+Проверим есть ли localhost:5000/custom-nginx в нашем списке
+
+
+![alt text](https://github.com/mezhibo/docker-compose/blob/dae958a68aa78a00dcf0f9adbf48cfe4f511aab5/IMG/26.jpg)
+
+
+
+Теперь зайдем на веб-интерфер Portnainer
+
+
+![alt text](https://github.com/mezhibo/docker-compose/blob/8678bb4c53ada68eceeb39518d22e41f38f318d1/IMG/27.jpg)
+
+
+Запустим compose-nginx через веб интерфейс
+
+![alt text](https://github.com/mezhibo/docker-compose/blob/8678bb4c53ada68eceeb39518d22e41f38f318d1/IMG/28.jpg)
+
+
+Зайдем в консоль машины и увидем что контейнер запустился 
+
+![alt text](https://github.com/mezhibo/docker-compose/blob/8678bb4c53ada68eceeb39518d22e41f38f318d1/IMG/29.jpg)
+
+
+Далее по заданию делаем снимок контейнера в portainer от от поля AppArmorProfile до Driver
+
+
+![alt text](https://github.com/mezhibo/docker-compose/blob/8678bb4c53ada68eceeb39518d22e41f38f318d1/IMG/30.jpg)
+
+
+Теперь удалим compose.yaml и попробуем прогнать docker compose up -d. И сразу видим предупреждение что найдены потерянные контейнеры для этого проекта.
+Описание контейнера Portainer было в удалённом файле compose.yaml, можно запустить команду с флагом --remove- orphans, чтобы очистить ее.
+
+![alt text](https://github.com/mezhibo/docker-compose/blob/8678bb4c53ada68eceeb39518d22e41f38f318d1/IMG/31.jpg)
+
+
+И теперь останавливаем все контейнеры одной командой
+
+![alt text](https://github.com/mezhibo/docker-compose/blob/8109ef210570ab9e86d23feb637b33bf8da4b32d/IMG/32.jpg)
 
 
